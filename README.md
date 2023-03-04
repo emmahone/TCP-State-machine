@@ -6,7 +6,7 @@ The TCP state machine is a conceptual model used to describe the sequence of sta
 TCP is a reliable, connection-oriented protocol that provides end-to-end communication between applications running on different hosts. The state machine of TCP reflects the various stages of communication that occur between the two hosts during a TCP session.
 
 There are 11 states in the TCP state machine. These states are:
-```
+
 1. CLOSED: This is the initial state of a TCP connection. In this state, the socket is closed, and no data can be sent or received.
 
 2. LISTEN: In this state, the server socket is waiting for a client connection request.
@@ -28,7 +28,7 @@ There are 11 states in the TCP state machine. These states are:
 10. LAST-ACK: In this state, the socket has received a FIN-ACK packet from the other end, indicating that the other end has acknowledged the connection termination request.
 
 11. TIME-WAIT: In this state, the socket waits for a specified amount of time before finally closing the connection to ensure that all the packets have been delivered and there is no chance of packet loss.
-```
+
 Each state transition in the TCP state machine is triggered by a specific event or condition. These events include:
 
 Connection request: A SYN packet is sent to the server to initiate a connection.
