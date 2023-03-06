@@ -78,6 +78,17 @@ In the CLOSE-WAIT state, if the application has not closed the socket, and the o
 
 The state transition diagram for TCP does not explicitly show the RST packet as a separate state, but rather as a mechanism for transitioning to the CLOSED state from other states.
 
+```mermaid
+flowchart LR
+    A[Client] -- Active open --> B((Server))
+    B -- SYN-ACK --> A
+    A -- ACK --> B
+    C[Server] -- Passive open --> D((Client))
+    D -- SYN --> C
+    C -- SYN-ACK --> D
+    D -- ACK --> C
+```
+
 Active open refers to the process of initiating a TCP connection by the client, where the client sends a SYN packet to the server to request the establishment of a connection. The server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a client-initiated connection or outbound connection.
 
 Passive open, on the other hand, refers to the process of initiating a TCP connection by the server, where the server waits for a connection request from the client. In this method, the server socket is opened and set to listen for incoming connection requests. When a client sends a SYN packet to the server, the server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a server-initiated connection or inbound connection.
