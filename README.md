@@ -1,6 +1,4 @@
 # TCP-State-machine
-![tcp1](https://user-images.githubusercontent.com/16479213/222905779-c7f5e59e-c357-4ae8-a94c-4ae9aa5f8757.JPG)
-
 The TCP state machine is a conceptual model used to describe the sequence of states and transitions that occur during a TCP connection between two network hosts. It is commonly represented as a diagram with the states and transitions illustrated as nodes and arrows respectively.
 
 TCP is a reliable, connection-oriented protocol that provides end-to-end communication between applications running on different hosts. The state machine of TCP reflects the various stages of communication that occur between the two hosts during a TCP session.
@@ -42,8 +40,6 @@ Connection termination: A FIN packet is sent by one host to indicate that it has
 Timeout: If a response is not received within a specified time, the socket may transition to a different state.
 
 The state transitions in the TCP state machine can be illustrated using a state transition diagram. This diagram shows the various states and the conditions that trigger the transitions between them.
-
-![tcp2](https://user-images.githubusercontent.com/16479213/222905791-cb02b11c-0375-48c4-8329-b34b46bde5f4.JPG)
 
 ```mermaid
 graph LR
