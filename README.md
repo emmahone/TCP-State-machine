@@ -45,50 +45,30 @@ The state transitions in the TCP state machine can be illustrated using a state 
 
 ![tcp2](https://user-images.githubusercontent.com/16479213/222905791-cb02b11c-0375-48c4-8329-b34b46bde5f4.JPG)
 
-
 ```mermaid
 graph LR
-    subgraph TCP State Machine
-    start((Start)) --> CLOSED
-    CLOSED --> LISTEN
-    LISTEN --> SYN_RCVD
-    LISTEN --> SYN_SENT
-    SYN_RCVD --> ESTABLISHED
-    SYN_SENT --> SYN_RCVD
-    SYN_SENT --> ESTABLISHED
-    ESTABLISHED --> FIN_WAIT_1
-    ESTABLISHED --> CLOSE_WAIT
-    FIN_WAIT_1 --> FIN_WAIT_2
-    FIN_WAIT_1 --> CLOSING
-    FIN_WAIT_2 --> TIME_WAIT
-    CLOSING --> TIME_WAIT
-    CLOSE_WAIT --> LAST_ACK
-    LAST_ACK --> CLOSED
-    TIME_WAIT --> CLOSED
-    end
-```
-
-```mermaid
-graph TD;
-    subgraph TCP State Machine
-        A[Closed] --(Passive Open)--> B[Listen]
-        A --(Active Open)--> C[Syn Sent]
-        B --(Receive Syn)--> D[Syn Received]
-        B --(Close)--> A
-        C --(Receive Syn)--> E[Syn Received]
-        C --(Receive Syn-Ack)--> F[Established]
-        C --(Close)--> G[Closed]
-        D --(Receive Ack)--> F
-        D --(Receive Fin)--> H[Close Wait]
-        F --(Receive Fin)--> I[Close Wait]
-        F --(Send Fin)--> J[Fin Wait 1]
-        F --(Send Fin and Receive Ack)--> K[Fin Wait 2]
-        F --(Receive Ack)--> F
-        H --(Send Ack)--> A
-        I --(Send Ack)--> J
-        J --(Receive Ack)--> G
-        K --(Receive Ack)--> G
-    end
+  A((CLOSED)) -- Passive Open --> B((LISTEN))
+  A -- Active Open --> C((SYN_SENT))
+  B -- Listen --> D((SYN_RCVD))
+  C -- SYN --> E((ESTABLISHED))
+  C -- Close --> A
+  D -- SYN --> F((ESTABLISHED))
+  D -- Close --> A
+  E -- Close --> G((FIN_WAIT_1))
+  E -- Passive Close --> H((CLOSE_WAIT))
+  E -- Active Close --> I((FIN_WAIT_2))
+  F -- Close --> J((CLOSED))
+  F -- Active Close --> K((FIN_WAIT_1))
+  G -- ACK --> J
+  G -- FIN --> L((FIN_WAIT_2))
+  H -- Close --> M((LAST_ACK))
+  I -- ACK --> M
+  I -- Close --> N((TIME_WAIT))
+  L -- ACK --> O((TIME_WAIT))
+  L -- ACK FIN --> P((TIME_WAIT))
+  O -- Close --> J
+  P -- Close --> J
+  M -- Close --> J
 ```
 
 A connection reset, also known as an RST (reset) packet, is a TCP packet that can be sent by either host to abruptly terminate a TCP connection. In the TCP state machine, a connection reset can occur in two different states: ESTABLISHED and CLOSE-WAIT.
