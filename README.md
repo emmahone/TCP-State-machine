@@ -29,15 +29,15 @@ There are 11 states in the TCP state machine. These states are:
 
 Each state transition in the TCP state machine is triggered by a specific event or condition. These events include:
 
-Connection request: A SYN packet is sent to the server to initiate a connection.
+- Connection request: A SYN packet is sent to the server to initiate a connection.
 
-Connection response: A SYN-ACK packet is sent back by the server to confirm the connection request.
+- Connection response: A SYN-ACK packet is sent back by the server to confirm the connection request.
 
-Data transfer: Data is transmitted between the two hosts.
+- Data transfer: Data is transmitted between the two hosts.
 
-Connection termination: A FIN packet is sent by one host to indicate that it has finished sending data, and the other end responds with a FIN-ACK packet to acknowledge the termination request.
+- Connection termination: A FIN packet is sent by one host to indicate that it has finished sending data, and the other end responds with a FIN-ACK packet to acknowledge the termination request.
 
-Timeout: If a response is not received within a specified time, the socket may transition to a different state.
+- Timeout: If a response is not received within a specified time, the socket may transition to a different state.
 
 The state transitions in the TCP state machine can be illustrated using a state transition diagram. This diagram shows the various states and the conditions that trigger the transitions between them.
 
