@@ -68,6 +68,29 @@ graph LR
     end
 ```
 
+```mermaid
+graph TD;
+    subgraph TCP State Machine
+        A[Closed] --(Passive Open)--> B[Listen]
+        A --(Active Open)--> C[Syn Sent]
+        B --(Receive Syn)--> D[Syn Received]
+        B --(Close)--> A
+        C --(Receive Syn)--> E[Syn Received]
+        C --(Receive Syn-Ack)--> F[Established]
+        C --(Close)--> G[Closed]
+        D --(Receive Ack)--> F
+        D --(Receive Fin)--> H[Close Wait]
+        F --(Receive Fin)--> I[Close Wait]
+        F --(Send Fin)--> J[Fin Wait 1]
+        F --(Send Fin and Receive Ack)--> K[Fin Wait 2]
+        F --(Receive Ack)--> F
+        H --(Send Ack)--> A
+        I --(Send Ack)--> J
+        J --(Receive Ack)--> G
+        K --(Receive Ack)--> G
+    end
+```
+
 A connection reset, also known as an RST (reset) packet, is a TCP packet that can be sent by either host to abruptly terminate a TCP connection. In the TCP state machine, a connection reset can occur in two different states: ESTABLISHED and CLOSE-WAIT.
 
 If a host receives a TCP packet that does not fit into any of the expected sequences for an established TCP connection, it can send an RST packet to the other host to indicate that the connection should be immediately terminated. This can happen, for example, if the packet contains an incorrect sequence number or checksum, indicating that it has been corrupted or tampered with.
