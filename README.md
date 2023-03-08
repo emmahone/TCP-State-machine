@@ -66,6 +66,7 @@ graph LR
   P -- Close --> J
   M -- Close --> J
 ```
+# Connection Resets
 
 A connection reset, also known as an RST (reset) packet, is a TCP packet that can be sent by either host to abruptly terminate a TCP connection. In the TCP state machine, a connection reset can occur in two different states: ESTABLISHED and CLOSE-WAIT. In the below flowchart, we demonstrate an example of a RST in the TCP state machine. The transition from "Established" to "RST_SENT" represents a scenario where a RST packet is sent by one of the endpoints to abruptly terminate the connection. The connection then transitions to the "Closed" state, indicating that the connection has been fully terminated.
 
@@ -106,7 +107,6 @@ subgraph RST Example
   rst_sent --> closed
 end
 ```
-
 If a host receives a TCP packet that does not fit into any of the expected sequences for an established TCP connection, it can send an RST packet to the other host to indicate that the connection should be immediately terminated. This can happen, for example, if the packet contains an incorrect sequence number or checksum, indicating that it has been corrupted or tampered with.
 
 In the ESTABLISHED state, a connection reset can be initiated by either host. The host that initiates the reset sends an RST packet, and the other host responds by transitioning to the CLOSED state.
@@ -115,6 +115,7 @@ In the CLOSE-WAIT state, if the application has not closed the socket, and the o
 
 The state transition diagram for TCP does not explicitly show the RST packet as a separate state, but rather as a mechanism for transitioning to the CLOSED state from other states.
 
+# Active/Passive Open
 ```mermaid
 flowchart LR
     A[Client] -- Active open --> B((Server))
