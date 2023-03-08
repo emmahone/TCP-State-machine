@@ -109,8 +109,6 @@ end
 ```
 If a host receives a TCP packet that does not fit into any of the expected sequences for an established TCP connection, it can send an RST packet to the other host to indicate that the connection should be immediately terminated. This can happen, for example, if the packet contains an incorrect sequence number or checksum, indicating that it has been corrupted or tampered with.
 ```
-$ vim -t tcp_reset
-
 From net/ipv4/tcp_input.c
 
 4113 /* When we get a reset we do this. */
@@ -140,8 +138,6 @@ From net/ipv4/tcp_input.c
 4137         if (!sock_flag(sk, SOCK_DEAD))
 4138                 sk->sk_error_report(sk);
 4139 }
-
-$ vim -t tcp_done
 
 From net/ipv4/tcp.c
 
