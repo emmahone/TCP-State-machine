@@ -111,12 +111,7 @@ If the other endpoint acknowledges the FIN segment with an ACK segment, the endp
 During the CLOSE-WAIT state, the endpoint has received a FIN segment from the other endpoint and acknowledged it with an ACK segment, but still has some data to send before terminating the connection. Once the endpoint has finished sending data, it initiates the connection termination process by sending a FIN segment to the other endpoint.
 
 ## 9. CLOSING:
-```mermaid
-graph LR
-  A[Local] -->|ACK, Seq=X+1, Ack=Y+1| B[Remote]
-  A -->|FIN, Seq=X| C((TIME-WAIT))
-  B -->|ACK, Seq=Y+1, Ack=X+1| D((TIME-WAIT))
-```
+
 The CLOSING state is the state when an endpoint has sent a FIN (Finish) segment to initiate the connection termination process and has received an ACK (Acknowledgment) segment from the other endpoint, but has not yet received a FIN segment from the other endpoint to confirm the termination of the connection.
 
 When an endpoint sends a FIN segment to initiate the connection termination process, it transitions to the FIN-WAIT-1 state. If the other endpoint acknowledges the FIN segment with an ACK segment, it transitions to the FIN-WAIT-2 state. However, if the other endpoint also sends a FIN segment in response to the FIN segment, it transitions to the CLOSING state.
@@ -147,6 +142,13 @@ If the other endpoint does not acknowledge the FIN segment with an ACK segment, 
 
 During the LAST-ACK state, the endpoint has sent a FIN segment to initiate the connection termination process and has received an ACK segment and a FIN segment from the other endpoint. It acknowledges the FIN segment from the other endpoint with an ACK segment and waits for the other endpoint to acknowledge the FIN segment it sent before transitioning to the CLOSED state.
 ## 11. TIME-WAIT:
+```mermaid
+graph LR
+  A[Local] -->|ACK, Seq=X+1, Ack=Y+1| B[Remote]
+  A((CLOSED)) --> C((TIME-WAIT))
+  B --> D((CLOSED))
+  C -->|Time-out| E((CLOSED))
+```
 The TIME-WAIT state is a brief period during which an endpoint waits to ensure that all packets in the connection have been delivered and acknowledged before terminating the connection.
 
 When an endpoint sends a FIN (Finish) segment to initiate the connection termination process, it transitions to the FIN-WAIT-1 state. If the other endpoint acknowledges the FIN segment with an ACK segment, it transitions to the FIN-WAIT-2 state. If the other endpoint also sends a FIN segment in response to the FIN segment, it transitions to the CLOSING state, and once it receives an ACK segment from the other endpoint, it transitions to the LAST-ACK state. Once the other endpoint acknowledges the FIN segment with an ACK segment, it transitions to the TIME-WAIT state.
