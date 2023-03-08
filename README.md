@@ -19,7 +19,7 @@ There are 11 states in the TCP state machine. These states are:
 
 7. FIN-WAIT-2: In this state, the socket is waiting for a FIN packet from the other end.
 
-8. CLOSE-WAIT: In this state, the socket has received a FIN packet from the other end and is waiting for the application to close the socket. NOTE: The connection will stay in CLOSE-WAIT until the application/process associated with the open socket forcibly closes the connection.
+8. CLOSE-WAIT: In this state, the socket has received a FIN (finish) packet from the other end, indicating that it has no more data to send. When an endpoint receives a FIN message, it sends an acknowledgement (ACK) to the other endpoint and transitions to the CLOSE-WAIT state. In the CLOSE-WAIT state, the endpoint can still receive data from the other endpoint but cannot send any more data. The endpoint in the CLOSE-WAIT state will remain there until it receives a FIN message from the other endpoint, indicating that the connection is closed, or until the application using the connection closes the socket. Once the socket is closed, the endpoint sends a FIN message and transitions to the LAST-ACK state.
 
 9. CLOSING: In this state, both sockets have sent FIN packets to each other, and the socket is waiting for a FIN-ACK packet from the other end.
 
@@ -209,6 +209,11 @@ flowchart LR
 Active open refers to the process of initiating a TCP connection by the client, where the client sends a SYN packet to the server to request the establishment of a connection. The server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a client-initiated connection or outbound connection.
 
 Passive open, on the other hand, refers to the process of initiating a TCP connection by the server, where the server waits for a connection request from the client. In this method, the server socket is opened and set to listen for incoming connection requests. When a client sends a SYN packet to the server, the server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a server-initiated connection or inbound connection.
+
+# Passive Close
+Passive close refers to the process of closing a TCP connection initiated by the receiving endpoint. When the receiving endpoint has no more data to send, it sends a FIN message to the other endpoint and transitions to the passive close state. In the passive close state, the endpoint is waiting for an acknowledgement (ACK) from the other endpoint to confirm that it has received the FIN message. 
+
+Once the other endpoint sends an ACK message, the connection transitions to the TIME-WAIT state. In the TIME-WAIT state, the endpoint waits for any delayed packets that may still be in transit before fully closing the connection. After the TIME-WAIT period has expired, the endpoint transitions to the CLOSED state, and the connection is fully closed.
 
 Sources:
 https://www.ietf.org/rfc/rfc793.txt
