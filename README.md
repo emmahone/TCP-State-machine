@@ -231,5 +231,20 @@ Passive close refers to the process of closing a TCP connection initiated by the
 
 Once the other endpoint sends an ACK message, the connection transitions to the TIME-WAIT state. In the TIME-WAIT state, the endpoint waits for any delayed packets that may still be in transit before fully closing the connection. After the TIME-WAIT period has expired, the endpoint transitions to the CLOSED state, and the connection is fully closed.
 
+# Active Close
+
+```mermaid
+graph LR
+    A[Established] -->|Close| B[FIN_WAIT_1]
+    B -->|ACK| C[FIN_WAIT_2]
+    C -->|FIN| D[TIME_WAIT]
+    D -->|ACK| E[CLOSED]
+```
+An active close is a way to close a TCP connection in which one endpoint (usually the one that initiated the connection) sends a FIN (finish) message to the other endpoint, indicating that it has no more data to send and wishes to close the connection. This is known as an active close because the initiating endpoint takes an active role in closing the connection.
+
+In an active close, the initiating endpoint sends a FIN message, transitions to the FIN_WAIT_1 state, and waits for an ACK message from the other endpoint. Once the initiating endpoint receives the ACK message, it transitions to the FIN_WAIT_2 state and waits for a FIN message from the other endpoint. When the other endpoint sends a FIN message, the initiating endpoint sends an ACK message, transitions to the TIME_WAIT state, and waits for a period of time before transitioning to the CLOSED state.
+
+Active close is often used when the application that initiated the connection has finished sending data and wishes to cleanly close the connection. In contrast, a passive close is when an endpoint receives a FIN message from the other endpoint, indicating that the other endpoint wishes to close the connection.
+
 Sources:
 https://www.ietf.org/rfc/rfc793.txt
