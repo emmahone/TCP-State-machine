@@ -211,6 +211,22 @@ Active open refers to the process of initiating a TCP connection by the client, 
 Passive open, on the other hand, refers to the process of initiating a TCP connection by the server, where the server waits for a connection request from the client. In this method, the server socket is opened and set to listen for incoming connection requests. When a client sends a SYN packet to the server, the server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a server-initiated connection or inbound connection.
 
 # Passive Close
+```mermaid
+stateDiagram-v2
+  [*] --> CLOSED
+  CLOSED --> LISTEN : "Passive Open"
+  LISTEN --> SYN_RCVD : "RCV SYN"
+  SYN_RCVD --> FIN_WAIT_1 : "RCV ACK"
+  SYN_RCVD --> CLOSED : "Timeout"
+  SYN_RCVD --> CLOSING : "RCV FIN"
+  FIN_WAIT_1 --> FIN_WAIT_2 : "RCV FIN"
+  FIN_WAIT_1 --> CLOSING : "RCV FIN, ACK"
+  FIN_WAIT_1 --> TIME_WAIT : "RCV ACK of FIN"
+  FIN_WAIT_2 --> TIME_WAIT : "RCV ACK of FIN"
+  CLOSING --> TIME_WAIT : "RCV ACK of FIN"
+  TIME_WAIT --> CLOSED : "Timeout"
+```
+
 Passive close refers to the process of closing a TCP connection initiated by the receiving endpoint. When the receiving endpoint has no more data to send, it sends a FIN message to the other endpoint and transitions to the passive close state. In the passive close state, the endpoint is waiting for an acknowledgement (ACK) from the other endpoint to confirm that it has received the FIN message. 
 
 Once the other endpoint sends an ACK message, the connection transitions to the TIME-WAIT state. In the TIME-WAIT state, the endpoint waits for any delayed packets that may still be in transit before fully closing the connection. After the TIME-WAIT period has expired, the endpoint transitions to the CLOSED state, and the connection is fully closed.
