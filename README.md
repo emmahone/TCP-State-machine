@@ -214,17 +214,17 @@ Passive open, on the other hand, refers to the process of initiating a TCP conne
 ```mermaid
 stateDiagram-v2
   [*] --> CLOSED
-  CLOSED --> LISTEN : "Passive Open"
-  LISTEN --> SYN_RCVD : "RCV SYN"
-  SYN_RCVD --> FIN_WAIT_1 : "RCV ACK"
-  SYN_RCVD --> CLOSED : "Timeout"
-  SYN_RCVD --> CLOSING : "RCV FIN"
-  FIN_WAIT_1 --> FIN_WAIT_2 : "RCV FIN"
-  FIN_WAIT_1 --> CLOSING : "RCV FIN, ACK"
-  FIN_WAIT_1 --> TIME_WAIT : "RCV ACK of FIN"
-  FIN_WAIT_2 --> TIME_WAIT : "RCV ACK of FIN"
-  CLOSING --> TIME_WAIT : "RCV ACK of FIN"
-  TIME_WAIT --> CLOSED : "Timeout"
+  CLOSED --> LISTEN : Passive Open
+  LISTEN --> SYN_RCVD : RCV SYN
+  SYN_RCVD --> FIN_WAIT_1 : RCV ACK
+  SYN_RCVD --> CLOSED : Timeout
+  SYN_RCVD --> CLOSING : RCV FIN
+  FIN_WAIT_1 --> FIN_WAIT_2 : RCV FIN
+  FIN_WAIT_1 --> CLOSING : RCV FIN, ACK
+  FIN_WAIT_1 --> TIME_WAIT : RCV ACK of FIN
+  FIN_WAIT_2 --> TIME_WAIT : RCV ACK of FIN
+  CLOSING --> TIME_WAIT : RCV ACK of FIN
+  TIME_WAIT --> CLOSED : Timeout
 ```
 
 Passive close refers to the process of closing a TCP connection initiated by the receiving endpoint. When the receiving endpoint has no more data to send, it sends a FIN message to the other endpoint and transitions to the passive close state. In the passive close state, the endpoint is waiting for an acknowledgement (ACK) from the other endpoint to confirm that it has received the FIN message. 
