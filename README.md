@@ -19,7 +19,7 @@ There are 11 states in the TCP state machine. These states are:
 
 7. FIN-WAIT-2: In this state, the socket is waiting for a FIN packet from the other end.
 
-8. CLOSE-WAIT: In this state, the socket has received a FIN packet from the other end and is waiting for the application to close the socket.
+8. CLOSE-WAIT: In this state, the socket has received a FIN packet from the other end and is waiting for the application to close the socket. NOTE: The connection will stay in CLOSE-WAIT until the application/process associated with the open socket forcibly closes the connection.
 
 9. CLOSING: In this state, both sockets have sent FIN packets to each other, and the socket is waiting for a FIN-ACK packet from the other end.
 
@@ -108,10 +108,93 @@ subgraph RST Example
 end
 ```
 If a host receives a TCP packet that does not fit into any of the expected sequences for an established TCP connection, it can send an RST packet to the other host to indicate that the connection should be immediately terminated. This can happen, for example, if the packet contains an incorrect sequence number or checksum, indicating that it has been corrupted or tampered with.
+```
+$ vim -t tcp_reset
+
+From net/ipv4/tcp_input.c
+
+4113 /* When we get a reset we do this. */
+4114 void tcp_reset(struct sock *sk)
+4115 {
+4116         trace_tcp_receive_reset(sk);
+4117 
+4118         /* We want the right error as BSD sees it (and indeed as we do). */
+4119         switch (sk->sk_state) {
+4120         case TCP_SYN_SENT:
+4121                 sk->sk_err = ECONNREFUSED;
+4122                 break;
+4123         case TCP_CLOSE_WAIT:
+4124                 sk->sk_err = EPIPE;
+4125                 break;
+4126         case TCP_CLOSE:
+4127                 return;
+4128         default:
+4129                 sk->sk_err = ECONNRESET;
+4130         }
+4131         /* This barrier is coupled with smp_rmb() in tcp_poll() */
+4132         smp_wmb();
+4133 
+4134         tcp_write_queue_purge(sk);
+4135         tcp_done(sk);
+4136 
+4137         if (!sock_flag(sk, SOCK_DEAD))
+4138                 sk->sk_error_report(sk);
+4139 }
+
+$ vim -t tcp_done
+
+From net/ipv4/tcp.c
+
+3840 void tcp_done(struct sock *sk)
+3841 {
+3842         struct request_sock *req;
+3843 
+3844         /* We might be called with a new socket, after
+3845          * inet_csk_prepare_forced_close() has been called
+3846          * so we can not use lockdep_sock_is_held(sk)
+3847          */
+3848         req = rcu_dereference_protected(tcp_sk(sk)->fastopen_rsk, 1);
+3849 
+3850         if (sk->sk_state == TCP_SYN_SENT || sk->sk_state == TCP_SYN_RECV)
+3851                 TCP_INC_STATS(sock_net(sk), TCP_MIB_ATTEMPTFAILS);
+3852 
+3853         tcp_set_state(sk, TCP_CLOSE);
+3854         tcp_clear_xmit_timers(sk);
+3855         if (req)
+3856                 reqsk_fastopen_remove(sk, req, false);
+3857 
+3858         sk->sk_shutdown = SHUTDOWN_MASK;
+3859 
+3860         if (!sock_flag(sk, SOCK_DEAD))
+3861                 sk->sk_state_change(sk);
+3862         else
+3863                 inet_csk_destroy_sock(sk);
+3864 }
+```
 
 In the ESTABLISHED state, a connection reset can be initiated by either host. The host that initiates the reset sends an RST packet, and the other host responds by transitioning to the CLOSED state.
 
 In the CLOSE-WAIT state, if the application has not closed the socket, and the other end sends an RST packet, the socket transitions to the CLOSED state immediately without waiting for the application to close the socket.
+
+```
+From net/ipv4/tcp_input.c
+
+4141 /*
+4142  *      Process the FIN bit. This now behaves as it is supposed to work
+4143  *      and the FIN takes effect when it is validly part of sequence
+4144  *      space. Not before when we get holes.
+4145  *
+4146  *      If we are ESTABLISHED, a received fin moves us to CLOSE-WAIT
+4147  *      (and thence onto LAST-ACK and finally, CLOSE, we never enter
+4148  *      TIME-WAIT)
+4149  *
+4150  *      If we are in FINWAIT-1, a received FIN indicates simultaneous
+4151  *      close and we go into CLOSING (and later onto TIME-WAIT)
+4152  *
+4153  *      If we are in FINWAIT-2, a received FIN moves us to TIME-WAIT.
+4154  */
+4155 void tcp_fin(struct sock *sk)
+```
 
 The state transition diagram for TCP does not explicitly show the RST packet as a separate state, but rather as a mechanism for transitioning to the CLOSED state from other states.
 
