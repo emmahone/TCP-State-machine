@@ -19,7 +19,7 @@ There are 11 states in the TCP state machine. These states are:
 
 7. FIN-WAIT-2: In this state, the socket is waiting for a FIN packet from the other end.
 
-8. CLOSE-WAIT: In this state, the socket has received a FIN (finish) packet from the other end, indicating that it has no more data to send. When an endpoint receives a FIN message, it sends an acknowledgement (ACK) to the other endpoint and transitions to the CLOSE-WAIT state. In the CLOSE-WAIT state, the endpoint can still receive data from the other endpoint but cannot send any more data. The endpoint in the CLOSE-WAIT state will remain there until it receives a FIN message from the other endpoint, indicating that the connection is closed, or until the application using the connection closes the socket. Once the socket is closed, the endpoint sends a FIN message and transitions to the LAST-ACK state.
+8. CLOSE-WAIT: In this state, the socket has received a FIN packet from the other end and is waiting for the application to close the socket. NOTE: The connection will stay in CLOSE-WAIT until the application/process associated with the open socket forcibly closes the connection.
 
 9. CLOSING: In this state, both sockets have sent FIN packets to each other, and the socket is waiting for a FIN-ACK packet from the other end.
 
@@ -27,6 +27,8 @@ There are 11 states in the TCP state machine. These states are:
 
 11. TIME-WAIT: In this state, the socket waits for a specified amount of time before finally closing the connection to ensure that all the packets have been delivered and there is no chance of packet loss.
 
+See States.md in this repo for details about each state. 
+## State Transitions
 Each state transition in the TCP state machine is triggered by a specific event or condition. These events include:
 
 - Connection request: A SYN packet is sent to the server to initiate a connection.
@@ -38,7 +40,7 @@ Each state transition in the TCP state machine is triggered by a specific event 
 - Connection termination: A FIN packet is sent by one host to indicate that it has finished sending data, and the other end responds with a FIN-ACK packet to acknowledge the termination request.
 
 - Timeout: If a response is not received within a specified time, the socket may transition to a different state.
-
+## State Diagram
 The state transitions in the TCP state machine can be illustrated using a state transition diagram. This diagram shows the various states and the conditions that trigger the transitions between them.
 
 ```mermaid
