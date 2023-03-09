@@ -1,4 +1,4 @@
-# States
+# TCP States
 
 ## 1. CLOSED: 
 This is the initial state of a TCP connection. In this state, the socket is closed, and no data can be sent or received.
