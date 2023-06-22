@@ -5,41 +5,41 @@ TCP is a reliable, connection-oriented protocol that provides end-to-end communi
 
 There are 11 states in the TCP state machine. These states are:
 
-1. CLOSED: This is the initial state of a TCP connection. In this state, the socket is closed, and no data can be sent or received.
+1. `CLOSED`: This is the initial state of a TCP connection. In this state, the socket is closed, and no data can be sent or received.
 
-2. LISTEN: In this state, the server socket is waiting for a client connection request.
+2. `LISTEN`: In this state, the server socket is waiting for a client connection request.
 
-3. SYN-SENT: In this state, the client socket has sent a SYN (synchronize) packet to initiate a connection request to the server.
+3. `SYN-SENT`: In this state, the client socket has sent a SYN (synchronize) packet to initiate a connection request to the server.
 
-4. SYN-RECEIVED: In this state, the server socket has received a SYN packet and sends back a SYN-ACK (synchronize-acknowledgment) packet to confirm the connection request.
+4. `SYN-RECEIVED`: In this state, the server socket has received a SYN packet and sends back a SYN-ACK (synchronize-acknowledgment) packet to confirm the connection request.
 
-5. ESTABLISHED: In this state, the connection is established, and both sockets can send and receive data.
+5. `ESTABLISHED`: In this state, the connection is established, and both sockets can send and receive data.
 
-6. FIN-WAIT-1: In this state, the socket has received a FIN (finish) packet from the other end of the connection, indicating that the other end has finished sending data.
+6. `FIN-WAIT-1`: In this state, the socket has received a FIN (finish) packet from the other end of the connection, indicating that the other end has finished sending data.
 
-7. FIN-WAIT-2: In this state, the socket is waiting for a FIN packet from the other end.
+7. `FIN-WAIT-2`: In this state, the socket is waiting for a FIN packet from the other end.
 
-8. CLOSE-WAIT: In this state, the socket has received a FIN packet from the other end and is waiting for the application to close the socket. NOTE: The connection will stay in CLOSE-WAIT until the application/process associated with the open socket forcibly closes the connection.
+8. `CLOSE-WAIT`: In this state, the socket has received a FIN packet from the other end and is waiting for the application to close the socket. NOTE: The connection will stay in CLOSE-WAIT until the application/process associated with the open socket forcibly closes the connection.
 
-9. CLOSING: In this state, both sockets have sent FIN packets to each other, and the socket is waiting for a FIN-ACK packet from the other end.
+9. `CLOSING`: In this state, both sockets have sent FIN packets to each other, and the socket is waiting for a FIN-ACK packet from the other end.
 
-10. LAST-ACK: In this state, the socket has received a FIN-ACK packet from the other end, indicating that the other end has acknowledged the connection termination request.
+10. `LAST-ACK`: In this state, the socket has received a FIN-ACK packet from the other end, indicating that the other end has acknowledged the connection termination request.
 
-11. TIME-WAIT: In this state, the socket waits for a specified amount of time before finally closing the connection to ensure that all the packets have been delivered and there is no chance of packet loss.
+11. `TIME-WAIT`: In this state, the socket waits for a specified amount of time before finally closing the connection to ensure that all the packets have been delivered and there is no chance of packet loss.
 
 See States.md in this repo for details about each state. 
 ## State Transitions
 Each state transition in the TCP state machine is triggered by a specific event or condition. These events include:
 
-- Connection request: A SYN packet is sent to the server to initiate a connection.
+- `Connection request`: A SYN packet is sent to the server to initiate a connection.
 
-- Connection response: A SYN-ACK packet is sent back by the server to confirm the connection request.
+- `Connection response`: A SYN-ACK packet is sent back by the server to confirm the connection request.
 
-- Data transfer: Data is transmitted between the two hosts.
+- `Data transfer`: Data is transmitted between the two hosts.
 
-- Connection termination: A FIN packet is sent by one host to indicate that it has finished sending data, and the other end responds with a FIN-ACK packet to acknowledge the termination request.
+- `Connection termination`: A FIN packet is sent by one host to indicate that it has finished sending data, and the other end responds with a FIN-ACK packet to acknowledge the termination request.
 
-- Timeout: If a response is not received within a specified time, the socket may transition to a different state.
+- `Timeout`: If a response is not received within a specified time, the socket may transition to a different state.
 ## State Diagram
 The state transitions in the TCP state machine can be illustrated using a state transition diagram. This diagram shows the various states and the conditions that trigger the transitions between them.
 
@@ -208,9 +208,9 @@ flowchart LR
     D -- ACK --> C
 ```
 
-Active open refers to the process of initiating a TCP connection by the client, where the client sends a SYN packet to the server to request the establishment of a connection. The server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a client-initiated connection or outbound connection.
+`Active open` refers to the process of initiating a TCP connection by the client, where the client sends a SYN packet to the server to request the establishment of a connection. The server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a client-initiated connection or outbound connection.
 
-Passive open, on the other hand, refers to the process of initiating a TCP connection by the server, where the server waits for a connection request from the client. In this method, the server socket is opened and set to listen for incoming connection requests. When a client sends a SYN packet to the server, the server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a server-initiated connection or inbound connection.
+`Passive open`, on the other hand, refers to the process of initiating a TCP connection by the server, where the server waits for a connection request from the client. In this method, the server socket is opened and set to listen for incoming connection requests. When a client sends a SYN packet to the server, the server responds with a SYN-ACK packet to confirm the connection request, and the client sends an ACK packet to acknowledge the response. This process is also called a server-initiated connection or inbound connection.
 
 # Passive Close
 ```mermaid
@@ -229,7 +229,7 @@ stateDiagram-v2
   TIME_WAIT --> CLOSED : Timeout
 ```
 
-Passive close refers to the process of closing a TCP connection initiated by the receiving endpoint. When the receiving endpoint has no more data to send, it sends a FIN message to the other endpoint and transitions to the passive close state. In the passive close state, the endpoint is waiting for an acknowledgement (ACK) from the other endpoint to confirm that it has received the FIN message. 
+`Passive close` refers to the process of closing a TCP connection initiated by the receiving endpoint. When the receiving endpoint has no more data to send, it sends a FIN message to the other endpoint and transitions to the passive close state. In the passive close state, the endpoint is waiting for an acknowledgement (ACK) from the other endpoint to confirm that it has received the FIN message. 
 
 Once the other endpoint sends an ACK message, the connection transitions to the TIME-WAIT state. In the TIME-WAIT state, the endpoint waits for any delayed packets that may still be in transit before fully closing the connection. After the TIME-WAIT period has expired, the endpoint transitions to the CLOSED state, and the connection is fully closed.
 
@@ -242,7 +242,7 @@ graph LR
     C -->|FIN| D[TIME_WAIT]
     D -->|ACK| E[CLOSED]
 ```
-An active close is a way to close a TCP connection in which one endpoint (usually the one that initiated the connection) sends a FIN (finish) message to the other endpoint, indicating that it has no more data to send and wishes to close the connection. This is known as an active close because the initiating endpoint takes an active role in closing the connection.
+An `active close` is a way to close a TCP connection in which one endpoint (usually the one that initiated the connection) sends a FIN (finish) message to the other endpoint, indicating that it has no more data to send and wishes to close the connection. This is known as an active close because the initiating endpoint takes an active role in closing the connection.
 
 In an active close, the initiating endpoint sends a FIN message, transitions to the FIN_WAIT_1 state, and waits for an ACK message from the other endpoint. Once the initiating endpoint receives the ACK message, it transitions to the FIN_WAIT_2 state and waits for a FIN message from the other endpoint. When the other endpoint sends a FIN message, the initiating endpoint sends an ACK message, transitions to the TIME_WAIT state, and waits for a period of time before transitioning to the CLOSED state.
 
